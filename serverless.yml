@@ -4,11 +4,24 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs18.x
+  memorySize: 128
+  stage: ${opt:stage, 'dev'}
+  region: eu-central-1
+
+environment:
+  NODE_ENV: development
+  REGION: ${self:provider.region}
 
 functions:
   api:
     handler: src/index.handler
     events:
       - httpApi:
-          path: /
+          path: /docs/{proxy+}
+          method: get
+      - httpApi:
+          path: /swagger/swagger.json
+          method: get
+      - httpApi:
+          path: /users/{userId}
           method: get
